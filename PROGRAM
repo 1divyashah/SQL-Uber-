@@ -1,0 +1,432 @@
+create database uber_Assign;
+use uber_Assign;
+select * from sql_assignment_uber_rides;
+select * from sql_assignment_uber_drivers;
+select * from sql_assignment_uber_passengers;
+
+select count(*) from sql_assignment_uber_rides;
+select count(*) from sql_assignment_uber_drivers;
+select count(*) from sql_assignment_uber_passengers;
+
+#Questions:
+#Basic Level:
+
+#1.What are & how many unique pickup locations are there in the dataset?
+select distinct(pickup_location) from sql_assignment_uber_rides;
+select count(distinct (pickup_location)) from sql_assignment_uber_rides;
+
+#2.What is the total number of rides in the dataset?
+select count(*) from sql_assignment_uber_rides;
+
+#3.Calculate the average ride duration.
+select avg(ride_duration) from sql_assignment_uber_rides saur 
+
+#4.List the top 5 drivers based on their total earnings.
+select driver_id, sum(earnings) 
+from sql_assignment_uber_drivers 
+group by driver_id 
+order by sum(earnings) desc limit 5;
+
+#5.Calculate the total number of rides for each payment method.
+select payment_method, count(*) 
+from sql_assignment_uber_rides 
+group by payment_method;
+
+#6.Retrieve rides with a fare amount greater than 20.
+select * from sql_assignment_uber_rides where fare_amount > 20;
+
+#7.Identify the most common pickup location.
+select pickup_location, count(*) as ridecount
+from sql_assignment_uber_rides
+group by pickup_location
+order by ridecount desc 
+limit 5;
+
+select pickup_location, count(pickup_location) as ridecount
+from sql_assignment_uber_rides
+group by pickup_location
+order by ridecount desc 
+limit 5;
+
+#8.Calculate the average fare amount.
+select avg(fare_amount) from sql_assignment_uber_rides saur 
+
+#9.List the top 10 drivers with the highest average ratings.
+select driver_id, avg(rating) 
+from sql_assignment_uber_drivers 
+group by driver_id
+order by avg(rating) desc limit 10;
+
+#10.Calculate the total earnings for all drivers.
+select  sum(earnings) from sql_assignment_uber_drivers saud
+
+#11.How many rides were paid using the "Cash" payment method?
+select count(*) from sql_assignment_uber_rides where payment_method ='cash';
+select count(payment_method) from sql_assignment_uber_rides where payment_method ='cash';
+
+#12.Calculate the number of rides & average ride distance for rides originating from the 'Dhanbad' pickup location.
+select  count(*), avg(ride_distance) 
+from sql_assignment_uber_rides
+where pickup_location ='Dhanbad';
+
+#13.Retrieve rides with a ride duration less than 10 minutes.
+select ride_id, ride_duration  from sql_assignment_uber_rides where ride_duration < 10;
+
+SELECT * 
+FROM sql_assignment_uber_rides 
+WHERE ride_duration < 10;
+
+#14.List the passengers who have taken the most number of rides.
+select passenger_id, count(*)
+from sql_assignment_uber_rides
+group by passenger_id 
+order by count(*) desc limit 1;
+
+#15.Calculate the total number of rides for each driver in descending order.
+select driver_id, count(*)
+from sql_assignment_uber_rides
+group by driver_id
+order by  count(*) desc;
+
+#16.Identify the payment methods used by passengers who took rides from the 'Gandhinagar' pickup location.
+select distinct(payment_method)
+from sql_assignment_uber_rides
+where pickup_location = 'Gandhinagar';
+
+#17.Calculate the average fare amount for rides with a ride distance greater than 10.
+select avg(fare_amount) from sql_assignment_uber_rides saur where ride_distance >10;
+
+#18.List the drivers in descending order according to their total number of rides.
+SELECT driver_id, total_rides
+FROM sql_assignment_uber_drivers
+order by total_rides DESC;
+
+#19.Calculate the percentage distribution of rides for each pickup location.
+select pickup_location, count(*), 
+round(count(*) * 100/ (select count(*)from sql_assignment_uber_rides),2) as percentage
+from sql_assignment_uber_rides
+group by pickup_location
+order by percentage desc;
+
+select pickup_location, count(pickup_location)
+from sql_assignment_uber_rides 
+group by pickup_location 
+order by count(pickup_location) desc;
+
+#20.Retrieve rides where both pickup and dropoff locations are the same.
+select pickup_location, dropoff_location  from sql_assignment_uber_rides saur where pickup_location = dropoff_location ;
+select * from sql_assignment_uber_rides  where pickup_location = dropoff_location ; 
+
+
+Intermediate Level:     
+                 
+#1.List the passengers who have taken rides from at least 300 different pickup locations.
+select passenger_id , count(distinct(pickup_location))  
+from sql_assignment_uber_rides
+group by passenger_id
+having count(distinct(pickup_location)) >= 300;
+
+#2.Calculate the average fare amount for rides taken on weekdays.
+select avg(fare_amount) 
+from sql_assignment_uber_rides 
+where dayofweek(STR_TO_DATE(ride_timestamp, '%m/%d/%y %H:%i')) >5;
+
+select avg(fare_amount) 
+from sql_assignment_uber_rides where ride_timestamp >5;
+
+select ride_timestamp, (str_to_date(ride_timestamp))  
+from sql_assignment_uber_rides;
+
+select date_format("2017-06-15", "%M %d %Y") ;
+select date_format("2017-06-15", "%W %M %e %Y") ;
+
+select  ride_timestamp, dayofweek(ride_timestamp), avg(fare_amount)
+from sql_assignment_uber_rides
+where dayofweek(ride_timestamp) not in (1,7)
+group by ride_id;
+
+#3.Identify the drivers who have taken rides with distances greater than 19.
+select distinct(driver_id), ride_distance  from sql_assignment_uber_rides where ride_distance > 19;
+
+#4.Calculate the total earnings for drivers who have completed more than 100 rides.
+select  driver_id ,sum(earnings)
+from sql_assignment_uber_drivers
+where total_rides >100
+group by driver_id;
+
+SELECT driver_id, SUM(earnings) AS total_earnings
+FROM sql_assignment_uber_drivers
+WHERE driver_id
+IN (
+	SELECT driver_id 
+	FROM sql_assignment_uber_rides 
+	GROUP BY driver_id 
+	HAVING COUNT(*) > 100)
+GROUP BY driver_id;
+
+
+
+SELECT CONCAT(UCASE(SUBSTRING(pickup_location, 1, 1)), 
+LCASE(SUBSTRING(pickup_location , 2))) 
+FROM sql_assignment_uber_rides saur 
+
+#5.Retrieve rides where the fare amount is less than the average fare amount.
+SELECT * 
+FROM sql_assignment_uber_rides
+WHERE fare_amount < 
+(SELECT AVG(fare_amount) FROM sql_assignment_uber_rides);
+
+#6.Calculate the average rating of drivers who have driven rides with both 'Credit Card' and 'Cash' payment methods.
+SELECT driver_id, AVG(rating)
+FROM sql_assignment_uber_drivers
+WHERE driver_id in(
+	select driver_id 
+	from sql_assignment_uber_rides 
+	where payment_method 
+	in ('Credit Card','cash')
+	group by driver_id
+	having count(distinct payment_method)= 2)
+GROUP BY driver_id;
+
+select r.driver_id, avg(d.rating) 
+from sql_assignment_uber_rides r inner join sql_assignment_uber_drivers d
+on r.driver_id = d.driver_id 
+group by driver_id ;
+
+#Teacher solution
+select r.driver_id, avg(d.rating) 
+from sql_assignment_uber_rides r inner join sql_assignment_uber_drivers d
+on r.driver_id = d.driver_id 
+where r.payment_method in ("Credit Card","cash")
+group by d.driver_id
+having count(distinct r.payment_method =2);
+
+#7.List the top 3 passengers with the highest total spending.
+select p.passenger_id, p.passenger_name, sum(r.fare_amount) as total_spending
+from sql_assignment_uber_passengers p inner join sql_assignment_uber_rides r
+on p.passenger_id = r.passenger_id 
+group by p.passenger_id , p.passenger_name 
+order by total_spending desc 
+limit 3;
+
+#8.Calculate the average fare amount for rides taken during different months of the year.
+SELECT MONTH(STR_TO_DATE(ride_timestamp, '%m/%d/%Y %H:%i')) month_of_year, avg(fare_amount)
+FROM sql_assignment_uber_rides
+GROUP BY month_of_year;
+
+select monthname(ride_timestamp), avg(fare_amount)
+from sql_assignment_uber_rides
+group by monthname(ride_timestamp);
+
+select  month(ride_timestamp), avg(fare_amount)
+from sql_assignment_uber_rides
+group by month(ride_timestamp);
+
+#9.Identify the most common pair of pickup and dropoff locations.
+select pickup_location, dropoff_location, count(*)
+from sql_assignment_uber_rides
+group by pickup_location, dropoff_location 
+order by count(*) desc 
+limit 1;
+
+select pickup_location, dropoff_location, count(driver_id)
+from sql_assignment_uber_rides
+group by pickup_location, dropoff_location 
+order by count(driver_id) desc 
+limit 1;
+
+#10.Calculate the total earnings for each driver and order them by earnings in descending order.
+
+select driver_id , sum(earnings)
+from sql_assignment_uber_drivers
+group by driver_id 
+order by sum(earnings) desc;
+
+#11.List the passengers who have taken rides on their signup date.
+select p.passenger_id, p.passenger_name 
+from sql_assignment_uber_passengers p inner join sql_assignment_uber_rides r
+on p.passenger_id = r.passenger_id 
+where Date(p.signup_date) = Date(r.ride_timestamp);
+
+#12.Calculate the average earnings for each driver and order them by earnings in descending order.
+
+select driver_name , avg(earnings)
+from sql_assignment_uber_drivers
+group by driver_name 
+order by avg(earnings) desc;
+
+#13.Retrieve rides with distances less than the average ride distance.
+select *  from sql_assignment_uber_rides where  ride_distance < 
+(select avg(ride_distance) from sql_assignment_uber_rides);
+
+#14.List the drivers who have completed the least number of rides.
+select driver_id, count(*)
+from sql_assignment_uber_rides saur 
+group by driver_id 
+order by count(*) asc;
+
+#15.Calculate the average fare amount for rides taken by passengers who have taken at least 20 rides.
+#given solution & teacher solution right
+select avg(fare_amount)
+from sql_assignment_uber_rides
+where passenger_id in(
+	select passenger_id  
+	from sql_assignment_uber_rides 
+	group by passenger_id 
+	having count(*)>= 20);
+
+#teacher solution no
+select passenger_id, avg(fare_amount) 
+from sql_assignment_uber_rides 
+where passenger_id in (
+	select passenger_id  
+	from sql_assignment_uber_passengers
+	where total_rides>=20)
+	group by passenger_id ;
+
+
+#16.Identify the pickup location with the highest average fare amount.
+select pickup_location, avg(fare_amount)
+from sql_assignment_uber_rides saur 
+group by pickup_location 
+order by avg(fare_amount) desc
+limit 1;
+
+#17.Calculate the average rating of drivers who completed at least 100 rides.
+select avg(rating)
+from sql_assignment_uber_drivers
+where driver_id in (
+	select driver_id 
+	from sql_assignment_uber_rides
+	group by driver_id 
+	having count(*)>=100);
+
+#done by teacher
+select d.driver_id , avg(d.rating), count(d.driver_id)
+from sql_assignment_uber_drivers d inner join sql_assignment_uber_rides r
+on d.driver_id = r.driver_id 
+group by d.driver_id 
+having count(d.driver_id) >=100;
+
+#18.List the passengers who have taken rides from at least 5 different pickup locations.
+select passenger_id , count(distinct pickup_location)
+from sql_assignment_uber_rides 
+group by passenger_id
+having count(distinct pickup_location) >= 5;
+
+#19.Calculate the average fare amount for rides taken by passengers with ratings above 4.
+select avg(fare_amount)
+from sql_assignment_uber_rides
+where passenger_id in (
+	select passenger_id 
+	from sql_assignment_uber_passengers 
+	where rating>4);
+
+#20.Retrieve rides with the shortest ride duration in each pickup location.
+select * 
+from sql_assignment_uber_rides
+where ride_duration = (
+select min(ride_duration)
+from sql_assignment_uber_rides
+);
+
+SELECT r1.*
+FROM sql_assignment_uber_rides r1
+JOIN 
+(SELECT pickup_location, MIN(ride_duration) AS min_duration
+ FROM sql_assignment_uber_rides
+ GROUP BY pickup_location)r2 
+ ON r1.pickup_location = r2.pickup_location AND r1.ride_duration = r2.min_duration;
+
+
+#Advanced Level:
+
+#1. List the drivers who have driven rides in all pickup locations.
+SELECT driver_id
+FROM sql_assignment_uber_drivers
+WHERE driver_id NOT in
+
+
+(SELECT DISTINCT driver_id FROM sql_assignment_uber_rides WHERE pickup_location NOT IN 
+(SELECT DISTINCT pickup_location FROM sql_assignment_uber_rides));
+
+
+
+
+
+
+
+
+
+
+select dispatch (r.pickup_location, d.driver_id 
+from sql_assignment_uber_drivers d inner join sql_assignment_uber_rides r
+on d.driver_id = r.driver_id 
+
+
+
+#2.Calculate the average fare amount for rides taken by passengers who have spent more than 300 in total.
+select avg(fare_amount)
+from sql_assignment_uber_rides
+where passenger_id in 
+(select passenger_id from sql_assignment_uber_passengers where total_spent>300); 
+
+#3.List the bottom 5 drivers based on their average earnings.
+select driver_name  , driver_id, avg(earnings)
+from sql_assignment_uber_drivers 
+group by driver_id , driver_name 
+order by avg(earnings)
+limit 5;
+
+#4.Calculate the sum fare amount for rides taken by passengers who have taken rides in different payment methods.
+select sum(fare_amount)
+from sql_assignment_uber_rides
+where passenger_id in (
+	select  passenger_id 
+	from sql_assignment_uber_rides
+	group by passenger_id 
+	having count(distinct payment_method) > 1);
+
+#5. Retrieve rides where the fare amount is significantly above the average fare amount. (1.5 will not come)
+select * from sql_assignment_uber_rides
+where fare_amount > (select avg(fare_amount) from sql_assignment_uber_rides);
+
+#6. List the drivers who have completed rides on the same day they joined.
+select d.driver_id, d.driver_name 
+from sql_assignment_uber_drivers d inner join sql_assignment_uber_rides r
+on d.driver_id = r.driver_id 
+where date(d.join_date) = date(r.ride_timestamp);
+
+#7.Calculate the average fare amount for rides taken by passengers who have taken rides in different payment methods.
+select avg(fare_amount)
+from sql_assignment_uber_rides
+where passenger_id in (
+ 	select passenger_id 
+ 	from sql_assignment_uber_rides
+ 	group by passenger_id
+ 	having count(distinct payment_method) > 1);
+
+#8.Identify the pickup location with the highest percentage increase 
+#in average fare amount compared to the overall average fare.
+SELECT pickup_location, AVG(fare_amount) AS avg_fare,
+(AVG(fare_amount) - (SELECT AVG(fare_amount) 
+FROM sql_assignment_uber_rides)) * 100.0 / 
+(SELECT AVG(fare_amount) FROM sql_assignment_uber_rides ) AS percentage_increase
+FROM sql_assignment_uber_rides
+GROUP BY pickup_location
+ORDER BY percentage_increase DESC
+LIMIT 1;
+
+#9. Retrieve rides where the dropoff location is the same as the pickup location.
+select dropoff_location, pickup_location 
+from sql_assignment_uber_rides
+where dropoff_location = pickup_location ;
+
+#10.Calculate the average rating of drivers who have driven rides with varying pickup locations.
+select avg(rating)
+from sql_assignment_uber_drivers 
+where driver_id in (
+	select distinct driver_id 
+	from sql_assignment_uber_rides
+	group by driver_id 
+	having count(distinct pickup_location)>1);
